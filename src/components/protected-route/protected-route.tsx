@@ -1,15 +1,11 @@
-import { ReactElement } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
 interface ProtectedRouteProps {
   onlyUnauth?: boolean;
-  children: ReactElement;
 }
 
-export const ProtectedRoute = ({
-  onlyUnauth = false,
-  children
-}: ProtectedRouteProps) => {
+export const ProtectedRoute = ({ onlyUnauth = false }: ProtectedRouteProps) => {
+  // надо взять данные пользователя из стора селектором
   const isAuthenticated = localStorage.getItem('accessToken'); // Базовая проверка авторизации
   const location = useLocation();
 
@@ -24,5 +20,6 @@ export const ProtectedRoute = ({
     return <Navigate to='/login' state={{ from: location }} replace />;
   }
 
-  return children;
+  //return children;
+  return <Outlet />;
 };

@@ -10,14 +10,8 @@ import {
   ResetPassword
 } from '@pages';
 import { useEffect } from 'react';
-import {
-  BrowserRouter,
-  Route,
-  Routes,
-  useLocation,
-  useNavigate
-} from 'react-router-dom';
-import { useDispatch } from '../../services/store';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { AppDispatch, useDispatch } from '../../services/store';
 //import { checkUserAuth } from '@slices';
 import {
   AppHeader,
@@ -30,7 +24,7 @@ import '../../index.css';
 import styles from './app.module.css';
 
 const App = () => {
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const background = location.state && location.state.background;
@@ -40,120 +34,112 @@ const App = () => {
     navigate(-1);
   };
 
-  useEffect(() => {
-    // Проверяем авторизацию пользователя при загрузке приложения
-    dispatch(checkUserAuth());
-  }, [dispatch]);
+  //useEffect(() => {
+  // Проверяем авторизацию пользователя при загрузке приложения
+  // dispatch(checkUserAuth());
+  //}, [dispatch]);
+
+  // useEffect(() => {
+  //   const token = localStorage.getItem('token');
+  //   if (token) {
+  //     dispatch(getUserThunk({ token }));
+  //   } else {
+  //     dispatch(init());
+  //   }
+  // }, []);
 
   return (
     <div className={styles.app}>
-      <BrowserRouter>
-        <AppHeader />
-        <Routes location={background || location}>
-          {/* Основные публичные маршруты */}
-          <Route path='/' element={<ConstructorPage />} />
-          <Route path='/feed' element={<Feed />} />
+      <AppHeader />
+      <Routes location={background || location}>
+        {/* Основные публичные маршруты */}
+        {/* Главная страница конструктора заказа*/}
+        <Route path='/' element={<ConstructorPage />} />
 
-          {/* Защищенные маршруты - только для НЕавторизованных */}
-          <Route
-            path='/login'
-            element={
-              <ProtectedRoute onlyUnauth>
-                <Login />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/register'
-            element={
-              <ProtectedRoute onlyUnauth>
-                <Register />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/forgot-password'
-            element={
-              <ProtectedRoute onlyUnauth>
-                <ForgotPassword />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/reset-password'
-            element={
-              <ProtectedRoute onlyUnauth>
-                <ResetPassword />
-              </ProtectedRoute>
-            }
-          />
+        {/* Лента заказов */}
+        <Route path='/feed' element={<Feed />} />
 
-          {/* Защищенные маршруты - только для авторизованных */}
-          <Route
-            path='/profile'
-            element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/profile/orders'
-            element={
-              <ProtectedRoute>
-                <ProfileOrders />
-              </ProtectedRoute>
-            }
-          />
+        {/* Защищенные маршруты - только для неавторизованных */}
+        {/* Страница входа */}
+        <Route path='/login' element={<ProtectedRoute onlyUnauth />}>
+          <Route path='/login' element={<Login />} />
+        </Route>
 
-          {/* Маршруты для модальных окон (без модалки) */}
-          <Route path='/ingredients/:id' element={<IngredientDetails />} />
-          <Route path='/feed/:number' element={<OrderInfo />} />
+        {/* Страница регистрации */}
+        <Route path='/register' element={<ProtectedRoute onlyUnauth />}>
+          <Route path='/register' element={<Register />} />
+        </Route>
+
+        {/* Страница восстановления пароля - первый шаг */}
+        <Route path='/forgot-password' element={<ProtectedRoute onlyUnauth />}>
+          <Route path='/forgot-password' element={<ForgotPassword />} />
+        </Route>
+
+        {/* Страница восстановления пароля - второй шаг */}
+        <Route path='/reset-password' element={<ProtectedRoute onlyUnauth />}>
+          <Route path='/reset-password' element={<ResetPassword />} />
+        </Route>
+
+        {/* Защищенные маршруты - только для авторизованных */}
+        {/* Страница профиля */}
+        <Route path='/profile' element={<ProtectedRoute />}>
+          <Route path='/profile' element={<Profile />} />
+        </Route>
+
+        {/* Страница истории заказов в профиле */}
+        <Route path='/profile/orders' element={<ProtectedRoute />}>
+          <Route path='/profile/orders' element={<ProfileOrders />} />
+        </Route>
+
+        {/* Страница информации об ингридитенте при прямом переходе по url. Без модального окна */}
+        <Route path='/ingredients/:id' element={<IngredientDetails />} />
+
+        {/* Страница информации о заказе при прямом переходе по url. Без модального окна */}
+        <Route path='/feed/:number' element={<OrderInfo />} />
+
+        {/* Страница информации о заказе внутри истории заказов в профиле при прямом переходе по url. Без модального окна */}
+        <Route path='/profile/orders/:number' element={<ProtectedRoute />}>
+          <Route path='/profile/orders/:number' element={<OrderInfo />} />
+        </Route>
+
+        {/* 404 страница */}
+        <Route path='*' element={<NotFound404 />} />
+      </Routes>
+
+      {/* Рендерим модальные окна поверх основного контента */}
+      {background && (
+        <Routes>
+          {/* Окно с информацией об ингридиенте */}
           <Route
-            path='/profile/orders/:number'
+            path='/ingredients/:id'
             element={
-              <ProtectedRoute>
+              <Modal title='Детали ингредиента' onClose={handleModalClose}>
+                <IngredientDetails />
+              </Modal>
+            }
+          />
+          {/* Окно с информациоей о заказе */}
+          <Route
+            path='/feed/:number'
+            element={
+              <Modal title='Детали заказа' onClose={handleModalClose}>
                 <OrderInfo />
-              </ProtectedRoute>
+              </Modal>
             }
           />
-
-          {/* 404 - должен быть последним */}
-          <Route path='*' element={<NotFound404 />} />
-        </Routes>
-
-        {/* Рендерим модальные окна поверх основного контента */}
-        {background && (
-          <Routes>
+          {/* Окно с информацией о заказе в профиле */}
+          <Route path='/profile/orders/:number' element={<ProtectedRoute />}>
             <Route
-              path='/ingredients/:id'
-              element={
-                <Modal title='Детали ингредиента' onClose={handleModalClose}>
-                  <IngredientDetails />
-                </Modal>
-              }
-            />
-            <Route
-              path='/feed/:number'
+              path='/profile/orders/:number'
               element={
                 <Modal title='Детали заказа' onClose={handleModalClose}>
                   <OrderInfo />
                 </Modal>
               }
             />
-            <Route
-              path='/profile/orders/:number'
-              element={
-                <ProtectedRoute>
-                  <Modal title='Детали заказа' onClose={handleModalClose}>
-                    <OrderInfo />
-                  </Modal>
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        )}
-      </BrowserRouter>
+          </Route>
+        </Routes>
+      )}
     </div>
   );
 };
