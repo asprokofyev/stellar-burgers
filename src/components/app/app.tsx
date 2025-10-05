@@ -1,4 +1,11 @@
 import {
+  AppHeader,
+  IngredientDetails,
+  Modal,
+  OrderInfo,
+  ProtectedRoute
+} from '@components';
+import {
   ConstructorPage,
   Feed,
   ForgotPassword,
@@ -9,18 +16,16 @@ import {
   Register,
   ResetPassword
 } from '@pages';
+import { Preloader } from '@ui';
 import { useEffect } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import { AppDispatch, useDispatch } from '../../services/store';
-//import { checkUserAuth } from '@slices';
-import {
-  AppHeader,
-  IngredientDetails,
-  Modal,
-  OrderInfo,
-  ProtectedRoute
-} from '@components';
 import '../../index.css';
+import { checkUserAuth } from '../../services/slices/user/actions';
+import {
+  selectIsAuthChecked,
+  selectUserLoading
+} from '../../services/slices/user/slice';
+import { AppDispatch, useDispatch, useSelector } from '../../services/store';
 import styles from './app.module.css';
 
 const App = () => {
@@ -28,25 +33,30 @@ const App = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const background = location.state && location.state.background;
+  const isAuthChecked = useSelector(selectIsAuthChecked);
+  const isLoading = useSelector(selectUserLoading);
 
   const handleModalClose = () => {
     // Возвращаемся к предыдущему пути
     navigate(-1);
   };
 
-  //useEffect(() => {
-  // Проверяем авторизацию пользователя при загрузке приложения
-  // dispatch(checkUserAuth());
-  //}, [dispatch]);
+  useEffect(() => {
+    // Проверяем авторизацию пользователя при загрузке приложения
+    dispatch(checkUserAuth());
+  }, []);
 
-  // useEffect(() => {
-  //   const token = localStorage.getItem('token');
-  //   if (token) {
-  //     dispatch(getUserThunk({ token }));
-  //   } else {
-  //     dispatch(init());
-  //   }
-  // }, []);
+  // Показываем прелоадер пока проверяем авторизацию
+  if (!isAuthChecked || isLoading) {
+    return (
+      <div className={styles.app}>
+        <AppHeader />
+        <div className={styles.loading}>
+          <Preloader />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.app}>
