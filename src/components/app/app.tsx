@@ -20,6 +20,8 @@ import { Preloader } from '@ui';
 import { useEffect } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import '../../index.css';
+import { getIngredients } from '../../services/slices/ingredients/actions';
+import { selectIngredientsLoading } from '../../services/slices/ingredients/slice';
 import { checkUserAuth } from '../../services/slices/user/actions';
 import {
   selectIsAuthChecked,
@@ -34,7 +36,8 @@ const App = () => {
   const navigate = useNavigate();
   const background = location.state && location.state.background;
   const isAuthChecked = useSelector(selectIsAuthChecked);
-  const isLoading = useSelector(selectUserLoading);
+  const userLoading = useSelector(selectUserLoading);
+  const ingredientsLoading = useSelector(selectIngredientsLoading);
 
   const handleModalClose = () => {
     // Возвращаемся к предыдущему пути
@@ -44,10 +47,12 @@ const App = () => {
   useEffect(() => {
     // Проверяем авторизацию пользователя при загрузке приложения
     dispatch(checkUserAuth());
+    // Загружаем ингредиенты при загрузке приложения
+    dispatch(getIngredients());
   }, []);
 
   // Показываем прелоадер пока проверяем авторизацию
-  if (!isAuthChecked || isLoading) {
+  if (!isAuthChecked || userLoading || ingredientsLoading) {
     return (
       <div className={styles.app}>
         <AppHeader />
