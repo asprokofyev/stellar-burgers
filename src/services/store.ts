@@ -3,9 +3,17 @@ import {
   useDispatch as dispatchHook,
   useSelector as selectorHook
 } from 'react-redux';
+import { burgerConstructorSlice } from './slices/constructor/slice';
+import { ingredientsSlice } from './slices/ingredients/slice';
+import { orderSlice } from './slices/order/slice';
 import { userSlice } from './slices/user/slice';
 
-const rootReducer = combineSlices(userSlice);
+const rootReducer = combineSlices(
+  userSlice,
+  ingredientsSlice,
+  burgerConstructorSlice,
+  orderSlice
+);
 
 /*const rootReducer = combineSlices(
   userSlice,

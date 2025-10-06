@@ -1,17 +1,17 @@
-import { createAsyncThunk, createAction } from '@reduxjs/toolkit';
 import {
-  registerUserApi,
-  TRegisterData,
-  loginUserApi,
-  TLoginData,
-  logoutApi,
-  getUserApi,
-  updateUserApi,
   forgotPasswordApi,
-  resetPasswordApi
+  getUserApi,
+  loginUserApi,
+  logoutApi,
+  registerUserApi,
+  resetPasswordApi,
+  TLoginData,
+  TRegisterData,
+  updateUserApi
 } from '@api';
-import { setCookie, deleteCookie, getCookie } from '../../../utils/cookie';
+import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
+import { deleteCookie, getCookie, setCookie } from '../../../utils/cookie';
 
 // Синхронные экшены
 export const setUser = createAction<TUser | null>('user/setUser');
