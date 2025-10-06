@@ -12,7 +12,6 @@ export const IngredientsCategory = forwardRef<
   HTMLUListElement,
   TIngredientsCategoryProps
 >(({ title, titleRef, ingredients }, ref) => {
-  /** TODO: взять переменную из стора */
   const bun = useSelector(selectConstructorBun);
   const constructorIngredients = useSelector(selectConstructorIngredients);
 
