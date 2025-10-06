@@ -1,7 +1,11 @@
 import { TIngredient } from '@utils-types';
 import { FC, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { selectIngredients } from '../../services/slices/ingredients/slice';
+import { getIngredients } from '../../services/slices/ingredients/actions';
+import {
+  selectIngredients,
+  selectIngredientsLoading
+} from '../../services/slices/ingredients/slice';
 import { fetchOrderByNumber } from '../../services/slices/order-info/actions';
 import {
   selectOrderByNumber,
@@ -16,10 +20,18 @@ export const OrderInfo: FC = () => {
   const dispatch = useDispatch();
 
   const ingredients = useSelector(selectIngredients);
+  const ingredientsLoading = useSelector(selectIngredientsLoading);
   const orderData = useSelector(selectOrderByNumber);
-  const isLoading = useSelector(selectOrderByNumberLoading);
+  const orderLoading = useSelector(selectOrderByNumberLoading);
 
   const orderNumber = number ? parseInt(number) : 0;
+
+  // Загружаем ингредиенты, если они не загружены
+  useEffect(() => {
+    if (ingredients.length === 0 && !ingredientsLoading) {
+      dispatch(getIngredients());
+    }
+  }, [ingredientsLoading, dispatch]);
 
   // Загружаем заказ по номеру, если его нет или номер изменился
   useEffect(() => {
@@ -72,7 +84,7 @@ export const OrderInfo: FC = () => {
     };
   }, [orderData, ingredients, orderNumber]);
 
-  if (isLoading || !orderInfo) {
+  if (ingredientsLoading || orderLoading || !orderInfo) {
     return <Preloader />;
   }
 

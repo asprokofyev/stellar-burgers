@@ -2,7 +2,10 @@ import { FC, useEffect } from 'react';
 import { BurgerConstructor, BurgerIngredients } from '../../components';
 import { Preloader } from '../../components/ui';
 import { getIngredients } from '../../services/slices/ingredients/actions';
-import { selectIngredientsLoading } from '../../services/slices/ingredients/slice';
+import {
+  selectIngredients,
+  selectIngredientsLoading
+} from '../../services/slices/ingredients/slice';
 import { useDispatch, useSelector } from '../../services/store';
 
 import styles from './constructor-page.module.css';
@@ -10,11 +13,18 @@ import styles from './constructor-page.module.css';
 export const ConstructorPage: FC = () => {
   const dispatch = useDispatch();
   const isIngredientsLoading = useSelector(selectIngredientsLoading);
+  const ingredients = useSelector(selectIngredients);
 
-  // Загружаем ингредиенты при монтировании компонента
+  // Загружаем ингредиенты только если их нет
   useEffect(() => {
-    dispatch(getIngredients());
-  }, [dispatch]);
+    if (ingredients.length === 0 && !isIngredientsLoading) {
+      dispatch(getIngredients());
+    }
+  }, [dispatch, isIngredientsLoading]);
+
+  if (isIngredientsLoading || ingredients.length === 0) {
+    return <Preloader />;
+  }
 
   return (
     <>

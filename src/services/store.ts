@@ -4,6 +4,7 @@ import {
   useSelector as selectorHook
 } from 'react-redux';
 import { burgerConstructorSlice } from './slices/constructor/slice';
+import { feedSlice } from './slices/feed/slice';
 import { ingredientsSlice } from './slices/ingredients/slice';
 import { orderByNumberSlice } from './slices/order-info/slice';
 import { orderSlice } from './slices/order/slice';
@@ -16,7 +17,8 @@ const rootReducer = combineSlices(
   burgerConstructorSlice,
   orderSlice,
   userOrdersSlice,
-  orderByNumberSlice
+  orderByNumberSlice,
+  feedSlice
 );
 
 export const store = configureStore({
