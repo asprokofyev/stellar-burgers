@@ -22,6 +22,7 @@ import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import '../../index.css';
 import { getIngredients } from '../../services/slices/ingredients/actions';
 import { selectIngredientsLoading } from '../../services/slices/ingredients/slice';
+import { selectOrderByNumber } from '../../services/slices/order-info/slice';
 import { checkUserAuth } from '../../services/slices/user/actions';
 import {
   selectIsAuthChecked,
@@ -38,6 +39,7 @@ const App = () => {
   const isAuthChecked = useSelector(selectIsAuthChecked);
   const userLoading = useSelector(selectUserLoading);
   const ingredientsLoading = useSelector(selectIngredientsLoading);
+  const orderData = useSelector(selectOrderByNumber);
 
   const handleModalClose = () => {
     // Возвращаемся к предыдущему пути
@@ -137,7 +139,14 @@ const App = () => {
           <Route
             path='/feed/:number'
             element={
-              <Modal title='Детали заказа' onClose={handleModalClose}>
+              <Modal
+                title={
+                  orderData
+                    ? '#' + orderData.number.toString().padStart(6, '0')
+                    : 'Детали заказа'
+                }
+                onClose={handleModalClose}
+              >
                 <OrderInfo />
               </Modal>
             }
@@ -147,7 +156,14 @@ const App = () => {
             <Route
               path='/profile/orders/:number'
               element={
-                <Modal title='Детали заказа' onClose={handleModalClose}>
+                <Modal
+                  title={
+                    orderData
+                      ? '#' + orderData.number.toString().padStart(6, '0')
+                      : 'Детали заказа'
+                  }
+                  onClose={handleModalClose}
+                >
                   <OrderInfo />
                 </Modal>
               }
