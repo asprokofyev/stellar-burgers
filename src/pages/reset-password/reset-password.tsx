@@ -1,35 +1,52 @@
+import { ResetPasswordUI } from '@ui-pages';
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-import { resetPasswordApi } from '@api';
-import { ResetPasswordUI } from '@ui-pages';
+import { resetPassword } from '../../services/slices/user/actions';
+import {
+  clearError,
+  selectIsPasswordForgot,
+  selectIsPasswordReset,
+  selectUserError
+} from '../../services/slices/user/slice';
+import { useDispatch, useSelector } from '../../services/store';
 
 export const ResetPassword: FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [password, setPassword] = useState('');
   const [token, setToken] = useState('');
-  const [error, setError] = useState<Error | null>(null);
+
+  const isPasswordForgot = useSelector(selectIsPasswordForgot);
+  const isPasswordReset = useSelector(selectIsPasswordReset);
+  const error = useSelector(selectUserError);
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
-    setError(null);
-    resetPasswordApi({ password, token })
-      .then(() => {
-        localStorage.removeItem('resetPassword');
-        navigate('/login');
-      })
-      .catch((err) => setError(err));
+    dispatch(resetPassword({ password, token }));
   };
 
+  // Проверяем, был ли запрос на восстановление пароля
   useEffect(() => {
-    if (!localStorage.getItem('resetPassword')) {
+    if (!isPasswordForgot) {
       navigate('/forgot-password', { replace: true });
     }
-  }, [navigate]);
+  }, [isPasswordForgot, navigate]);
+
+  // Перенаправляем после успешного сброса пароля
+  useEffect(() => {
+    if (isPasswordReset) {
+      navigate('/login', { replace: true });
+    }
+    // Очищаем ошибки при размонтировании компонента
+    return () => {
+      dispatch(clearError());
+    };
+  }, [isPasswordReset, navigate, dispatch]);
 
   return (
     <ResetPasswordUI
-      errorText={error?.message}
+      errorText={error || ''}
       password={password}
       token={token}
       setPassword={setPassword}
