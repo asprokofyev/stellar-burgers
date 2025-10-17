@@ -1,14 +1,14 @@
-import React, { FC } from 'react';
+import { BurgerConstructorElement, Modal } from '@components';
+import { OrderDetailsUI, Preloader } from '@ui';
+import { TConstructorIngredient } from '@utils-types';
 import {
   Button,
   ConstructorElement,
   CurrencyIcon
 } from '@zlden/react-developer-burger-ui-components';
+import { FC } from 'react';
 import styles from './burger-constructor.module.css';
 import { BurgerConstructorUIProps } from './type';
-import { TConstructorIngredient } from '@utils-types';
-import { BurgerConstructorElement, Modal } from '@components';
-import { Preloader, OrderDetailsUI } from '@ui';
 
 export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
   constructorItems,
@@ -18,9 +18,12 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
   onOrderClick,
   closeOrderModal
 }) => (
-  <section className={styles.burger_constructor}>
+  <section className={styles.burger_constructor} data-testid='constructor-area'>
     {constructorItems.bun ? (
-      <div className={`${styles.element} mb-4 mr-4`}>
+      <div
+        className={`${styles.element} mb-4 mr-4`}
+        data-testid='constructor-bun-top'
+      >
         <ConstructorElement
           type='top'
           isLocked
@@ -32,6 +35,7 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
     ) : (
       <div
         className={`${styles.noBuns} ${styles.noBunsTop} ml-8 mb-4 mr-5 text text_type_main-default`}
+        data-testid='no-bun-message'
       >
         Выберите булки
       </div>
@@ -51,13 +55,17 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
       ) : (
         <div
           className={`${styles.noBuns} ml-8 mb-4 mr-5 text text_type_main-default`}
+          data-testid='no-filling-message'
         >
           Выберите начинку
         </div>
       )}
     </ul>
     {constructorItems.bun ? (
-      <div className={`${styles.element} mt-4 mr-4`}>
+      <div
+        className={`${styles.element} mt-4 mr-4`}
+        data-testid='constructor-bun-bottom'
+      >
         <ConstructorElement
           type='bottom'
           isLocked
@@ -84,6 +92,7 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
         size='large'
         children='Оформить заказ'
         onClick={onOrderClick}
+        data-testid='order-button'
       />
     </div>
 
