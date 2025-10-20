@@ -5,11 +5,7 @@ import { fetchUserOrders } from './actions';
 import { userOrdersSlice } from './slice';
 
 describe('Тестирование редюсера истории заказов пользователя', () => {
-  const initialState = {
-    orders: [],
-    isLoading: false,
-    error: null
-  };
+  const initialState = userOrdersSlice.getInitialState();
 
   test('Должен возвращать корректное начальное состояние при вызове с undefined состоянием и неизвестным экшеном', () => {
     expect(

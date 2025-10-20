@@ -9,10 +9,7 @@ import { burgerConstructorSlice } from './slice';
 
 describe('Тестирование редюсера конструктора бургера', () => {
   // инициализируем стейт
-  const initialState = {
-    bun: null,
-    ingredients: []
-  };
+  const initialState = burgerConstructorSlice.getInitialState();
 
   test('Должен возвращать корректное начальное состояние при вызове с undefined состоянием и неизвестным экшеном', () => {
     expect(

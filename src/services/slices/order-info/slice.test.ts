@@ -1,3 +1,4 @@
+import { ingredientsSlice } from './../ingredients/slice';
 jest.mock('@api');
 
 import { mockOrder } from '../../../mocks/data';
@@ -5,11 +6,7 @@ import { fetchOrderByNumber } from './actions';
 import { orderByNumberSlice } from './slice';
 
 describe('Тестирование редюсера заказа по номеру', () => {
-  const initialState = {
-    order: null,
-    isLoading: false,
-    error: null
-  };
+  const initialState = orderByNumberSlice.getInitialState();
 
   test('Должен возвращать корректное начальное состояние при вызове с undefined состоянием и неизвестным экшеном', () => {
     expect(

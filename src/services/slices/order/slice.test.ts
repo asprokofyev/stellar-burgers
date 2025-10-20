@@ -5,11 +5,7 @@ import { createOrder } from './actions';
 import { orderSlice } from './slice';
 
 describe('Тестирование редюсера заказов', () => {
-  const initialState = {
-    orderData: null,
-    isLoading: false,
-    error: null
-  };
+  const initialState = orderSlice.getInitialState();
 
   test('Должен возвращать корректное начальное состояние при вызове с undefined состоянием и неизвестным экшеном', () => {
     expect(orderSlice.reducer(undefined, { type: 'UNKNOWN_ACTION' })).toEqual(

@@ -9,11 +9,7 @@ import { getIngredients } from './actions';
 import { ingredientsSlice } from './slice';
 
 describe('Тестирование редюсера ингредиентов', () => {
-  const initialState = {
-    ingredients: [],
-    isLoading: false,
-    error: null
-  };
+  const initialState = ingredientsSlice.getInitialState();
 
   test('Должен возвращать корректное начальное состояние при вызове с undefined состоянием и неизвестным экшеном', () => {
     expect(

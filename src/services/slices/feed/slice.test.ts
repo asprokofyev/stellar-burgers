@@ -5,14 +5,7 @@ import { fetchFeeds } from './actions';
 import { feedSlice } from './slice';
 
 describe('Тестирование редюсера ленты заказов', () => {
-  const initialState = {
-    orders: [],
-    total: 0,
-    totalToday: 0,
-    isLoading: false,
-    error: null,
-    selectedOrder: null
-  };
+  const initialState = feedSlice.getInitialState();
 
   test('Должен возвращать корректное начальное состояние при вызове с undefined состоянием и неизвестным экшеном', () => {
     expect(feedSlice.reducer(undefined, { type: 'UNKNOWN_ACTION' })).toEqual(
